@@ -1,3 +1,28 @@
 spring:
   application:
-    name: backend
+    name: shopgila-backend
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/shopgila}
+    username: ${SPRING_DATASOURCE_USERNAME:shopgila}
+    password: ${SPRING_DATASOURCE_PASSWORD:shopgila}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    locations: classpath:db/migration/postgres/shopgila_schema
+    schemas: shopgila
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+
+shopgila:
+  payment:
+    decline-token: tok_declined
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
