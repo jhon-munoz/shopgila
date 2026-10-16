@@ -95,3 +95,5 @@ The payment is simulated: the token `tok_declined` is rejected, any other token 
 - Products that were purchased cannot be deleted. A soft delete would allow retiring them.
 - Categories are read with a `SELECT DISTINCT`, fine for a catalog of this size; a dedicated table would be better if categories need their own data.
 - There is no order history screen, only the confirmation of the order just placed.
+
+A complete list of bugs found and fixed, and of known open issues, is in [KNOWN_ISSUES.md](KNOWN_ISSUES.md).
