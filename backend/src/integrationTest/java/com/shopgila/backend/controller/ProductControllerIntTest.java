@@ -24,16 +24,13 @@ class ProductControllerIntTest extends CommonIntegrationTests {
     @Test
     @DisplayName("Save a new product in the system")
     void givenNewProductThenSaveIt() throws Exception {
-        //Arrange
         ProductDto request = productDtoWith(" rs-001 ", "Running Shoes", "Footwear", "89.99", 150);
 
-        //Act
         String body = sendPostRequestWithBody(PRODUCTS, request)
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.sku").value("RS-001"))
                 .andReturn().getResponse().getContentAsString();
 
-        //Assert
         List<Product> products = productRepository.findAll();
         assertThat(products).hasSize(1);
         Product saved = products.get(0);

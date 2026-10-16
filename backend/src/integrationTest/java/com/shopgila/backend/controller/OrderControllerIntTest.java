@@ -51,11 +51,9 @@ class OrderControllerIntTest extends CommonIntegrationTests {
     @Test
     @DisplayName("Place an order with several lines discounting the stock")
     void givenValidOrderThenPersistItAndDiscountStock() throws Exception {
-        //Arrange
         Product shoes = savedProduct("RS-001", "89.99", 10);
         Product mouse = savedProduct("WM-042", "29.99", 5);
 
-        //Act
         sendPostRequestWithBody(ORDERS, orderWith(APPROVED_TOKEN, lineFor(shoes, 2), lineFor(mouse, 1)))
                 .andExpect(status().isCreated())
                 .andExpect(header().string("Location", containsString(ORDERS + "/")))
@@ -63,7 +61,6 @@ class OrderControllerIntTest extends CommonIntegrationTests {
                 .andExpect(jsonPath("$.paymentReference").value(containsString("PAY-")))
                 .andExpect(jsonPath("$.items.length()").value(2));
 
-        //Assert
         assertThat(stockOf(shoes)).isEqualTo(8);
         assertThat(stockOf(mouse)).isEqualTo(4);
         List<Order> orders = orderRepository.findAll();
@@ -212,7 +209,6 @@ class OrderControllerIntTest extends CommonIntegrationTests {
     @Test
     @DisplayName("Sell the last units only once when several buyers compete")
     void givenConcurrentBuyersThenNeverOversell() throws Exception {
-        //Arrange
         int stock = 5;
         int buyers = 10;
         Product lastUnits = savedProduct("HOT-001", "10.00", stock);
@@ -220,7 +216,6 @@ class OrderControllerIntTest extends CommonIntegrationTests {
         CountDownLatch start = new CountDownLatch(1);
         List<Future<Integer>> results = new ArrayList<>();
 
-        //Act
         for (int i = 0; i < buyers; i++) {
             results.add(executor.submit(() -> {
                 start.await();
@@ -235,7 +230,6 @@ class OrderControllerIntTest extends CommonIntegrationTests {
         }
         executor.shutdown();
 
-        //Assert
         assertThat(statuses).filteredOn(code -> code == 201).hasSize(stock);
         assertThat(statuses).filteredOn(code -> code == 409).hasSize(buyers - stock);
         assertThat(stockOf(lastUnits)).isZero();
